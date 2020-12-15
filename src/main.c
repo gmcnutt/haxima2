@@ -15,7 +15,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+#include <stdio.h>
+#include <config.h>
+
 int main(int argc, char **argv)
 {
+        printf("%s %s\n", PACKAGE_NAME, PACKAGE_VERSION);
         return 0;
 }

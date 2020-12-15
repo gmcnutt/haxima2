@@ -66,6 +66,7 @@ missing
 src/.deps/
 src/Makefile
 src/Makefile.in
+config.h
 
 # build generate files
 haxima2

@@ -1,6 +1,6 @@
 AC_INIT([haxima2], [0.0.1])
 dnl AC_CONFIG_SRCDIR([src/main.c])
-dnl AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_HEADERS([config.h])
 dnl AC_CANONICAL_HOST
 dnl AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE([foreign])
