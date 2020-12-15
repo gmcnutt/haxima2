@@ -26,7 +26,7 @@ int main(int argc, char **argv)
         SDL_Window *window = NULL;
         SDL_Renderer *renderer = NULL;
 
-        
+
         printf("%s %s\n", PACKAGE_NAME, PACKAGE_VERSION);
 
         /* Init SDL */
