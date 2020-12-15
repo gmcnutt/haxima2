@@ -15,11 +15,47 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-#include <stdio.h>
 #include <config.h>
+#include <stdio.h>
+
+#include <SDL2/SDL.h>
+
 
 int main(int argc, char **argv)
 {
+        SDL_Window *window = NULL;
+        SDL_Renderer *renderer = NULL;
+
+        
         printf("%s %s\n", PACKAGE_NAME, PACKAGE_VERSION);
+
+        /* Init SDL */
+        if (SDL_Init(SDL_INIT_VIDEO)) {
+                fprintf(stderr, "SDL_Init: %s\n", SDL_GetError());
+                return -1;
+        }
+
+        /* Cleanup SDL on exit. */
+        atexit(SDL_Quit);
+
+        /* Create the main window */
+        if (!(window = SDL_CreateWindow("Demo", SDL_WINDOWPOS_UNDEFINED,
+                                        SDL_WINDOWPOS_UNDEFINED, 640 * 2,
+                                        480 * 2,
+                                        SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN)))
+        {
+                fprintf(stderr, "SDL_CreateWindow: %s\n", SDL_GetError());
+                return -1;
+        }
+
+        /* Create the renderer. */
+        if (!(renderer = SDL_CreateRenderer(window, -1, 0))) {
+                fprintf(stderr, "SDL_CreateRenderer: %s\n", SDL_GetError());
+                goto destroy_window;
+        }
+
+destroy_window:
+        SDL_DestroyWindow(window);
+
         return 0;
 }
