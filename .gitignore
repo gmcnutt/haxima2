@@ -68,5 +68,8 @@ src/Makefile
 src/Makefile.in
 config.h
 
-# build generate files
+# build generated files
 haxima2
+
+# misc
+*~
