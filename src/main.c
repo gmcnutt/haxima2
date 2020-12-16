@@ -21,7 +21,7 @@
 #include <SDL2/SDL.h>
 
 
-int main(int argc, char **argv)
+int main()
 {
         SDL_Window *window = NULL;
         SDL_Renderer *renderer = NULL;
@@ -53,6 +53,9 @@ int main(int argc, char **argv)
                 fprintf(stderr, "SDL_CreateRenderer: %s\n", SDL_GetError());
                 goto destroy_window;
         }
+
+
+        SDL_DestroyRenderer(renderer);
 
 destroy_window:
         SDL_DestroyWindow(window);
