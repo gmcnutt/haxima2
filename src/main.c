@@ -19,7 +19,7 @@
 #include <stdio.h>
 
 #include <SDL2/SDL.h>
-
+#include <SDL2/SDL_ttf.h>
 
 int main()
 {
@@ -37,6 +37,12 @@ int main()
 
         /* Cleanup SDL on exit. */
         atexit(SDL_Quit);
+
+        if (TTF_Init()) {
+                fprintf(stderr, "TTF_Init: %s\n", TTF_GetError());
+                return -1;
+        }
+        atexit(TTF_Quit);
 
         /* Create the main window */
         if (!(window = SDL_CreateWindow("Demo", SDL_WINDOWPOS_UNDEFINED,

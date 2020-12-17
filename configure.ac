@@ -26,7 +26,7 @@ dnl CFLAGS="$CFLAGS $SDL_CFLAGS"
 dnl CC="$CXX"
 
 dnl dnl Add libraries to build process
-LIBS="$LIBS $SDL_LIBS"
+LIBS="$LIBS $SDL_LIBS -lSDL2_ttf"
 
 dnl dnl User directories for saving game data
 dnl AC_DEFINE(HOME_ENV, "HOME",
