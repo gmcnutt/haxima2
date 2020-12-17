@@ -61,7 +61,7 @@ int main()
 
         font_init();
         font_test(renderer);
-        
+
         SDL_DestroyRenderer(renderer);
 
 destroy_window:

@@ -84,10 +84,21 @@ void _font_printf(SDL_Renderer * renderer, TTF_Font * font, const char *fmt,
         }
 
         SDL_Surface *surface;
-        if (!(surface = TTF_RenderText_Solid(font, buf, fg))) {
+        if (!(surface = TTF_RenderText_Blended(font, buf, fg))) {
                 fprintf(stderr, "TTF_RenderText_Solid: %s\n", TTF_GetError());
                 return;
         }
+        /*
+         * SDL_Color bg = { 128, 128, 128, SDL_ALPHA_OPAQUE };
+         * if (!(surface = TTF_RenderText_Shaded(font, buf, fg, bg))) {
+         * fprintf(stderr, "TTF_RenderText_Solid: %s\n", TTF_GetError());
+         * return;
+         * }
+         * if (!(surface = TTF_RenderText_Solid(font, buf, fg))) {
+         * fprintf(stderr, "TTF_RenderText_Solid: %s\n", TTF_GetError());
+         * return;
+         * }
+         */
 
         SDL_Texture *texture;
         if (!(texture = SDL_CreateTextureFromSurface(renderer, surface))) {
@@ -124,6 +135,5 @@ void font_test(SDL_Renderer * renderer)
         _font_printf(renderer, font, "solid %s", TEST_FONT);
         SDL_Delay(5000);
 
-closefont:
         TTF_CloseFont(font);
 }
