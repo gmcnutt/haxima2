@@ -22,6 +22,17 @@
 
 #include "font.h"
 
+void on_keydown(SDL_KeyboardEvent * event, int *quit)
+{
+        switch (event->keysym.sym) {
+        case SDLK_q:
+                *quit = 1;
+                break;
+        default:
+                break;
+        }
+}
+
 int main()
 {
         SDL_Window *window = NULL;
@@ -41,7 +52,7 @@ int main()
 
 
         /* Create the main window */
-        if (!(window = SDL_CreateWindow("Demo", SDL_WINDOWPOS_UNDEFINED,
+        if (!(window = SDL_CreateWindow(PACKAGE_STRING, SDL_WINDOWPOS_UNDEFINED,
                                         SDL_WINDOWPOS_UNDEFINED, 640 * 2,
                                         480 * 2,
                                         SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN)))
@@ -61,6 +72,24 @@ int main()
 
         font_init();
         font_test(renderer);
+
+        SDL_Event event;
+        int quit = 0;
+        while (!quit) {
+                while (SDL_PollEvent(&event)) {
+                        switch (event.type) {
+                        case SDL_QUIT:
+                                quit = 1;
+                                break;
+                        case SDL_KEYDOWN:
+                                on_keydown(&event.key, &quit);
+                                break;
+                        default:
+                                break;
+                        }
+                }
+        }
+
 
         SDL_DestroyRenderer(renderer);
 

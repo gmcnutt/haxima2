@@ -133,7 +133,6 @@ void font_test(SDL_Renderer * renderer)
 
         _font_print_info(font);
         _font_printf(renderer, font, "solid %s", TEST_FONT);
-        SDL_Delay(5000);
 
         TTF_CloseFont(font);
 }
