@@ -17,6 +17,7 @@
  */
 #include <config.h>
 #include <stdio.h>
+#include <unistd.h>
 
 #include <SDL2/SDL.h>
 
@@ -33,13 +34,38 @@ void on_keydown(SDL_KeyboardEvent * event, int *quit)
         }
 }
 
-int main()
+static void _print_help()
 {
-        SDL_Window *window = NULL;
-        SDL_Renderer *renderer = NULL;
+        printf("Usage: %s [options]\n"
+               "Options: \n" "  -h: help\n" "  -v: version\n", PACKAGE_NAME);
+}
 
+int font_command_exec(int argc, char **argv)
+{
+        /* Evaluate the command-line args. */
+        static const char *help = "Usage: haxima2 font [options] <font-file>\n"
+            "Options:\n" " -h: help\n";
+        int c;
+        while ((c = getopt(argc, argv, "h")) != -1) {
+                switch (c) {
+                case '?':
+                        printf("%s", help);
+                        exit(EXIT_FAILURE);
+                case 'h':
+                default:
+                        printf("%s", help);
+                        exit(EXIT_SUCCESS);
+                        break;
+                }
+        }
 
-        printf("%s %s\n", PACKAGE_NAME, PACKAGE_VERSION);
+        /* getopt() resets optind to 1 when it matches argc */
+        if (optind == argc) {
+                printf("%s", help);
+                exit(EXIT_FAILURE);
+        }
+
+        const char *font_file = argv[optind];
 
         /* Init SDL */
         if (SDL_Init(SDL_INIT_VIDEO)) {
@@ -52,6 +78,7 @@ int main()
 
 
         /* Create the main window */
+        SDL_Window *window = NULL;
         if (!(window = SDL_CreateWindow(PACKAGE_STRING, SDL_WINDOWPOS_UNDEFINED,
                                         SDL_WINDOWPOS_UNDEFINED, 640 * 2,
                                         480 * 2,
@@ -62,6 +89,7 @@ int main()
         }
 
         /* Create the renderer. */
+        SDL_Renderer *renderer = NULL;
         if (!(renderer = SDL_CreateRenderer(window, -1, 0))) {
                 fprintf(stderr, "SDL_CreateRenderer: %s\n", SDL_GetError());
                 goto destroy_window;
@@ -71,7 +99,9 @@ int main()
         SDL_RenderClear(renderer);
 
         font_init();
-        font_test(renderer);
+        if (font_test(renderer, font_file)) {
+                goto destroy_renderer;
+        }
 
         SDL_Event event;
         int quit = 0;
@@ -90,11 +120,51 @@ int main()
                 }
         }
 
-
+destroy_renderer:
         SDL_DestroyRenderer(renderer);
 
 destroy_window:
         SDL_DestroyWindow(window);
 
         return 0;
+}
+
+int main(int argc, char **argv)
+{
+        printf("%s %s\n", PACKAGE_NAME, PACKAGE_VERSION);
+
+        /* Evaluate the command-line args. */
+        int c;
+        while ((c = getopt(argc, argv, "+vh")) != -1) {
+                switch (c) {
+                case 'v':
+                        printf("%s\n", PACKAGE_VERSION);
+                        break;
+                case '?':
+                        _print_help();
+                        exit(EXIT_FAILURE);
+                case 'h':
+                default:
+                        _print_help();
+                        exit(EXIT_SUCCESS);
+                        break;
+                }
+        }
+
+        if (optind == argc) {
+                exit(EXIT_SUCCESS);
+        }
+
+        const char *cmd = argv[optind];
+        if (!strcmp(cmd, "font")) {
+                argc -= optind;
+                argv = &argv[optind];
+                optind = 1;
+                font_command_exec(argc, argv);
+        } else {
+                fprintf(stderr, "%s: invalid command -- %s\n", PACKAGE_NAME,
+                        cmd);
+                exit(EXIT_FAILURE);
+        }
+
 }

@@ -120,19 +120,20 @@ freesurface:
         SDL_FreeSurface(surface);
 }
 
-void font_test(SDL_Renderer * renderer)
+int font_test(SDL_Renderer * renderer, const char *font_file)
 {
         TTF_Font *font;
-        const char *TEST_FONT = "zoftfrakt-eye-fs.ttf";
 
-        if (!(font = TTF_OpenFont(TEST_FONT, 18))) {
-                fprintf(stderr, "TTF_OpenFont(%s): %s\n", TEST_FONT,
+        if (!(font = TTF_OpenFont(font_file, 18))) {
+                fprintf(stderr, "TTF_OpenFont(%s): %s\n", font_file,
                         TTF_GetError());
-                return;
+                return -1;
         }
 
         _font_print_info(font);
-        _font_printf(renderer, font, "solid %s", TEST_FONT);
+        _font_printf(renderer, font, "solid %s", font_file);
 
         TTF_CloseFont(font);
+
+        return 0;
 }

@@ -22,6 +22,6 @@
 #include <SDL2/SDL.h>
 
 int font_init(void);
-void font_test(SDL_Renderer * renderer);
+int font_test(SDL_Renderer * renderer, const char *font_file);
 
 #endif
