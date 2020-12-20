@@ -16,7 +16,8 @@
  *  limitations under the License.
  */
 
-#include <SDL2/SDL_ttf.h>
+#include "font.h"
+
 
 int font_init(void)
 {
@@ -28,46 +29,7 @@ int font_init(void)
         return 0;
 }
 
-void _font_print_info(TTF_Font * font)
-{
-        static const char *hintings[] = {
-                "normal", "light", "mono", "none"
-        };
-
-        static const char *styles[] = {
-                "normal", "bold", "italic", "underling", "strikethrough"
-        };
-
-
-        printf("family:     %s\n", TTF_FontFaceFamilyName(font));
-        printf("style:      %s\n", TTF_FontFaceStyleName(font));
-        printf("faces:      %ld\n", TTF_FontFaces(font));
-        printf("fixedwidth: %s\n",
-               TTF_FontFaceIsFixedWidth(font) ? "yes" : "no");
-
-        int style = TTF_GetFontStyle(font);
-        printf("mode:      ");
-        if (style == TTF_STYLE_NORMAL) {
-                printf(" normal");
-        } else {
-                for (int i = 0; i < 4; i++) {
-                        if (style & (1 << i)) {
-                                printf(" %s", styles[i + 1]);
-                        }
-                }
-        }
-        printf("\n");
-
-        printf("hinting:    %s\n", hintings[TTF_GetFontHinting(font)]);
-        printf("kerning:    %s\n", TTF_GetFontKerning(font) ? "on" : "off");
-        printf("outline:    %d (pixels)\n", TTF_GetFontOutline(font));
-        printf("height:     %d (pixels)\n", TTF_FontHeight(font));
-        printf("ascent:     %d (pixels)\n", TTF_FontAscent(font));
-        printf("descent:    %d (pixels)\n", TTF_FontDescent(font));
-        printf("lineskip:   %d (pixels)\n", TTF_FontLineSkip(font));
-}
-
-void _font_printf(SDL_Renderer * renderer, TTF_Font * font, const char *fmt,
+void font_printf(SDL_Renderer * renderer, TTF_Font * font, const char *fmt,
                   ...)
 {
         static char buf[256];
@@ -120,20 +82,3 @@ freesurface:
         SDL_FreeSurface(surface);
 }
 
-int font_test(SDL_Renderer * renderer, const char *font_file)
-{
-        TTF_Font *font;
-
-        if (!(font = TTF_OpenFont(font_file, 18))) {
-                fprintf(stderr, "TTF_OpenFont(%s): %s\n", font_file,
-                        TTF_GetError());
-                return -1;
-        }
-
-        _font_print_info(font);
-        _font_printf(renderer, font, "solid %s", font_file);
-
-        TTF_CloseFont(font);
-
-        return 0;
-}

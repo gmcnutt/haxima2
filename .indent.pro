@@ -3,6 +3,7 @@
 --braces-on-if-line
 --braces-on-struct-decl-line
 --break-after-boolean-operator
+--comment-line-length160
 --cuddle-do-while
 --cuddle-else
 --dont-format-comments
@@ -10,7 +11,7 @@
 --indent-level8
 --leave-optional-blank-lines
 --leave-preprocessor-space
---line-length80
+--line-length160
 --linux-style
 --no-space-after-casts
 --no-space-after-function-call-names

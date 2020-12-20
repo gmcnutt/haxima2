@@ -11,11 +11,18 @@ Work-in-progress CRPG.
 
 # Build
 
-./autogen.sh
-make
-make install
+    ./autogen.sh
+    make
+    make install
 
 
 # Run
 
-haxima2
+    haxima2
+
+
+# Dev
+
+There is an .indent.pro file included will enforce the project's coding style:
+
+    indent src/*.[ch]

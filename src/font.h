@@ -20,8 +20,9 @@
 #define FONT_H
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 
 int font_init(void);
-int font_test(SDL_Renderer * renderer, const char *font_file);
+void font_printf(SDL_Renderer * renderer, TTF_Font * font, const char *fmt, ...);
 
 #endif
