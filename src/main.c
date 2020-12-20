@@ -25,11 +25,13 @@
 
 static void _print_help()
 {
+        /* *INDENT-OFF* */
         printf("Usage: %s [options] [command]\n"
                "Options: \n" "  -h: help\n" "  -v: version\n"
                "Commands:\n"
                "  font\n"
                , PACKAGE_NAME);
+        /* *INDENT-ON* */
 }
 
 int main(int argc, char **argv)
@@ -65,8 +67,7 @@ int main(int argc, char **argv)
                 optind = 1;
                 font_command_exec(argc, argv);
         } else {
-                fprintf(stderr, "%s: invalid command -- %s\n", PACKAGE_NAME,
-                        cmd);
+                fprintf(stderr, "%s: invalid command -- %s\n", PACKAGE_NAME, cmd);
                 exit(EXIT_FAILURE);
         }
 
