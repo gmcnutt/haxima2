@@ -24,8 +24,42 @@ static int font_test(SDL_Renderer * renderer, const char *font_file)
         }
 
         font_print_info(font);
-        char *text = str_printf("solid %s", font_file);
-        font_render(font, renderer, text);
+
+        /* Use dest to track the "cursor", initialize to renderer output
+         * dimensions. */
+        SDL_Rect dest;
+        if (SDL_GetRendererOutputSize(renderer, &dest.w, &dest.h)) {
+                fprintf(stderr, "SDL_GetRendererOutputSize: %s",
+                        SDL_GetError());
+                return -1;
+        }
+
+        /* Show blended mode */
+        int lineheight = font_get_height(font) + 1;
+        char *text = str_printf("blended %s", font_file);
+        font_render(font, renderer, &dest, text);
+        mem_deref(text);
+
+        /* Advance the line */
+        dest.y += lineheight;
+        dest.h -= lineheight;
+
+        /* Show solid mode */
+        text = str_printf("solid %s", font_file);
+        font_set_render_method(font, FONT_SOLID);
+        font_render(font, renderer, &dest, text);
+        mem_deref(text);
+
+        /* Advance the line */
+        dest.y += lineheight;
+        dest.h -= lineheight;
+
+        /* Show shaded mode */
+        text = str_printf("shaded %s", font_file);
+        font_set_render_method(font, FONT_SHADED);
+        SDL_Color bg = { 200, 200, 200, SDL_ALPHA_OPAQUE };
+        font_set_bgcolor(font, &bg);
+        font_render(font, renderer, &dest, text);
         mem_deref(text);
 
         mem_deref(font);

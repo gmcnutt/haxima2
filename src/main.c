@@ -55,7 +55,8 @@ int main(int argc, char **argv)
                 optind = 1;
                 font_command_exec(argc, argv);
         } else {
-                fprintf(stderr, "%s: invalid command -- %s\n", PACKAGE_NAME, cmd);
+                fprintf(stderr, "%s: invalid command -- %s\n", PACKAGE_NAME,
+                        cmd);
                 exit(EXIT_FAILURE);
         }
 

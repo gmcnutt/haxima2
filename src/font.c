@@ -9,10 +9,13 @@
 #include <stdio.h>
 #include <SDL2/SDL_ttf.h>
 
+#include "common.h"
 #include "mem.h"
 
 struct font {
         TTF_Font *ttf;
+        font_render_method_t render_method;
+        SDL_Color bg;
 };
 
 int font_sys_init(void)
@@ -27,18 +30,23 @@ int font_sys_init(void)
 
 static void _font_fin(void *ptr)
 {
-        font_t *font = (font_t *)ptr;
+        font_t *font = (font_t *) ptr;
         if (font->ttf) {
                 TTF_CloseFont(font->ttf);
                 font->ttf = NULL;
         }
 }
 
-font_t * font_open(const char *font_file, int ptsize)
+int font_get_height(font_t * font)
 {
-        font_t *font = mem_alloc(sizeof(font_t), _font_fin);
+        return TTF_FontHeight(font->ttf);
+}
 
-        if (! (font->ttf = TTF_OpenFont(font_file, ptsize))) {
+font_t *font_open(const char *font_file, int ptsize)
+{
+        font_t *font = mem_alloc(sizeof (font_t), _font_fin);
+
+        if (!(font->ttf = TTF_OpenFont(font_file, ptsize))) {
                 fprintf(stderr, "TTF_OpenFont(%s): %s\n", font_file,
                         TTF_GetError());
                 goto deref;
@@ -49,7 +57,7 @@ deref:
         return NULL;
 }
 
-void font_print_info(font_t *font)
+void font_print_info(font_t * font)
 {
         static const char *hintings[] = {
                 "normal", "light", "mono", "none"
@@ -80,7 +88,8 @@ void font_print_info(font_t *font)
         printf("\n");
 
         printf("hinting:    %s\n", hintings[TTF_GetFontHinting(font->ttf)]);
-        printf("kerning:    %s\n", TTF_GetFontKerning(font->ttf) ? "on" : "off");
+        printf("kerning:    %s\n",
+               TTF_GetFontKerning(font->ttf) ? "on" : "off");
         printf("outline:    %d (pixels)\n", TTF_GetFontOutline(font->ttf));
         printf("height:     %d (pixels)\n", TTF_FontHeight(font->ttf));
         printf("ascent:     %d (pixels)\n", TTF_FontAscent(font->ttf));
@@ -88,43 +97,64 @@ void font_print_info(font_t *font)
         printf("lineskip:   %d (pixels)\n", TTF_FontLineSkip(font->ttf));
 }
 
-void font_render(font_t *font, SDL_Renderer * renderer, const char *buf)
+void font_render(font_t * font, SDL_Renderer * renderer, const SDL_Rect * dest,
+                 const char *buf)
 {
         /* Render the string using the font to a surface. */
         SDL_Color fg = { 0, 0, 0, SDL_ALPHA_OPAQUE };
         SDL_Surface *surface;
-        if (!(surface = TTF_RenderText_Blended(font->ttf, buf, fg))) {
-                fprintf(stderr, "TTF_RenderText_Solid: %s\n", TTF_GetError());
-                return;
+
+        if (font->render_method == FONT_BLENDED) {
+                if (!(surface = TTF_RenderText_Blended(font->ttf, buf, fg))) {
+                        fprintf(stderr, "TTF_RenderText_Blended: %s\n",
+                                TTF_GetError());
+                        return;
+                }
+        } else if (font->render_method == FONT_SHADED) {
+                if (!
+                    (surface =
+                     TTF_RenderText_Shaded(font->ttf, buf, fg, font->bg))) {
+                        fprintf(stderr, "TTF_RenderText_Shaded: %s\n",
+                                TTF_GetError());
+                        return;
+                }
+        } else {
+                if (!(surface = TTF_RenderText_Solid(font->ttf, buf, fg))) {
+                        fprintf(stderr, "TTF_RenderText_Solid: %s\n",
+                                TTF_GetError());
+                        return;
+                }
         }
-        /*
-         * SDL_Color bg = { 128, 128, 128, SDL_ALPHA_OPAQUE };
-         * if (!(surface = TTF_RenderText_Shaded(font, buf, fg, bg))) {
-         * fprintf(stderr, "TTF_RenderText_Solid: %s\n", TTF_GetError());
-         * return;
-         * }
-         * if (!(surface = TTF_RenderText_Solid(font, buf, fg))) {
-         * fprintf(stderr, "TTF_RenderText_Solid: %s\n", TTF_GetError());
-         * return;
-         * }
-         */
 
         /* Create a texture from the surface. */
         SDL_Texture *texture;
         if (!(texture = SDL_CreateTextureFromSurface(renderer, surface))) {
-                fprintf(stderr, "SDL_CreateTextureFromSurface: %s\n", SDL_GetError());
+                fprintf(stderr, "SDL_CreateTextureFromSurface: %s\n",
+                        SDL_GetError());
                 goto freesurface;
         }
 
         /* Render the texture. */
         int w, h;
         SDL_QueryTexture(texture, NULL, NULL, &w, &h);
-        SDL_Rect dest = { 0, 0, w, h };
-        SDL_RenderCopy(renderer, texture, NULL, &dest);
+        SDL_Rect _dest = *dest;
+        _dest.w = min(w, _dest.w);
+        _dest.h = min(h, _dest.h);
+        SDL_RenderCopy(renderer, texture, NULL, &_dest);
         SDL_RenderPresent(renderer);
 
         SDL_DestroyTexture(texture);
 
 freesurface:
         SDL_FreeSurface(surface);
+}
+
+void font_set_bgcolor(font_t * font, SDL_Color * color)
+{
+        font->bg = *color;
+}
+
+void font_set_render_method(font_t * font, font_render_method_t method)
+{
+        font->render_method = method;
 }
