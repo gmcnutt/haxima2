@@ -67,7 +67,7 @@ src/.deps/
 src/Makefile
 src/Makefile.in
 config.h
-
+stamp-h1
 # build generated files
 haxima2
 
