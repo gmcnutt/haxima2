@@ -18,6 +18,9 @@
 
 #include "font.h"
 
+#include <stdio.h>
+
+#include "asprintf.h"
 
 int font_init(void)
 {
@@ -29,26 +32,25 @@ int font_init(void)
         return 0;
 }
 
-void font_printf(SDL_Renderer * renderer, TTF_Font * font, const char *fmt,
-                  ...)
+void font_printf(SDL_Renderer * renderer, TTF_Font * font, const char *fmt, ...)
 {
-        static char buf[256];
+        /* Allocate the printf-d string. */
         va_list args;
-        SDL_Color fg = { 0, 0, 0, SDL_ALPHA_OPAQUE };
-
+        char *buf;
         va_start(args, fmt);
-        int n = vsnprintf(buf, sizeof (buf), fmt, args);
+        int ret = vasprintf(&buf, fmt, args);
         va_end(args);
-
-        if (n < 0) {
-                perror("vsnprintf");
+        if (-1 == ret) {
+                perror("asnprintf");
                 return;
         }
 
+        /* Render the string using the font to a surface. */
+        SDL_Color fg = { 0, 0, 0, SDL_ALPHA_OPAQUE };
         SDL_Surface *surface;
         if (!(surface = TTF_RenderText_Blended(font, buf, fg))) {
                 fprintf(stderr, "TTF_RenderText_Solid: %s\n", TTF_GetError());
-                return;
+                goto freebuf;
         }
         /*
          * SDL_Color bg = { 128, 128, 128, SDL_ALPHA_OPAQUE };
@@ -62,16 +64,16 @@ void font_printf(SDL_Renderer * renderer, TTF_Font * font, const char *fmt,
          * }
          */
 
+        /* Create a texture from the surface. */
         SDL_Texture *texture;
         if (!(texture = SDL_CreateTextureFromSurface(renderer, surface))) {
-                fprintf(stderr, "SDL_CreateTextureFromSurface: %s\n",
-                        SDL_GetError());
+                fprintf(stderr, "SDL_CreateTextureFromSurface: %s\n", SDL_GetError());
                 goto freesurface;
         }
 
+        /* Render the texture. */
         int w, h;
         SDL_QueryTexture(texture, NULL, NULL, &w, &h);
-
         SDL_Rect dest = { 0, 0, w, h };
         SDL_RenderCopy(renderer, texture, NULL, &dest);
         SDL_RenderPresent(renderer);
@@ -80,5 +82,6 @@ void font_printf(SDL_Renderer * renderer, TTF_Font * font, const char *fmt,
 
 freesurface:
         SDL_FreeSurface(surface);
+freebuf:
+        free(buf);
 }
-

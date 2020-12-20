@@ -39,8 +39,7 @@ static void font_print_info(TTF_Font * font)
         printf("family:     %s\n", TTF_FontFaceFamilyName(font));
         printf("style:      %s\n", TTF_FontFaceStyleName(font));
         printf("faces:      %ld\n", TTF_FontFaces(font));
-        printf("fixedwidth: %s\n",
-               TTF_FontFaceIsFixedWidth(font) ? "yes" : "no");
+        printf("fixedwidth: %s\n", TTF_FontFaceIsFixedWidth(font) ? "yes" : "no");
 
         int style = TTF_GetFontStyle(font);
         printf("mode:      ");
@@ -69,8 +68,7 @@ static int font_test(SDL_Renderer * renderer, const char *font_file)
         TTF_Font *font;
 
         if (!(font = TTF_OpenFont(font_file, 18))) {
-                fprintf(stderr, "TTF_OpenFont(%s): %s\n", font_file,
-                        TTF_GetError());
+                fprintf(stderr, "TTF_OpenFont(%s): %s\n", font_file, TTF_GetError());
                 return -1;
         }
 
@@ -86,8 +84,7 @@ static int font_test(SDL_Renderer * renderer, const char *font_file)
 int font_command_exec(int argc, char **argv)
 {
         /* Evaluate the command-line args. */
-        static const char *help = "Usage: haxima2 font [options] <font-file>\n"
-            "Options:\n" " -h: help\n";
+        static const char *help = "Usage: haxima2 font [options] <font-file>\n" "Options:\n" " -h: help\n";
         int c;
         while ((c = getopt(argc, argv, "h")) != -1) {
                 switch (c) {
@@ -123,10 +120,7 @@ int font_command_exec(int argc, char **argv)
         /* Create the main window */
         SDL_Window *window = NULL;
         if (!(window = SDL_CreateWindow(PACKAGE_STRING, SDL_WINDOWPOS_UNDEFINED,
-                                        SDL_WINDOWPOS_UNDEFINED, 640 * 2,
-                                        480 * 2,
-                                        SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN)))
-        {
+                                        SDL_WINDOWPOS_UNDEFINED, 640 * 2, 480 * 2, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN))) {
                 fprintf(stderr, "SDL_CreateWindow: %s\n", SDL_GetError());
                 return -1;
         }
@@ -138,14 +132,17 @@ int font_command_exec(int argc, char **argv)
                 goto destroy_window;
         }
 
+        /* Clear the screen */
         SDL_SetRenderDrawColor(renderer, 128, 128, 128, SDL_ALPHA_OPAQUE);
         SDL_RenderClear(renderer);
 
+        /* Run the font test */
         font_init();
         if (font_test(renderer, font_file)) {
                 goto destroy_renderer;
         }
 
+        /* Loop until user exits */
         SDL_Event event;
         while (SDL_WaitEvent(&event)) {
                 if (event.type == SDL_QUIT) {
@@ -157,7 +154,7 @@ int font_command_exec(int argc, char **argv)
                         }
                 }
         }
-        
+
 destroy_renderer:
         SDL_DestroyRenderer(renderer);
 
@@ -166,4 +163,3 @@ destroy_window:
 
         return 0;
 }
-
