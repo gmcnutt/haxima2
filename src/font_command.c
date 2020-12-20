@@ -14,6 +14,27 @@
 #include "mem.h"
 #include "str.h"
 
+static const SDL_Color BLACK = { 0, 0, 0, SDL_ALPHA_OPAQUE };
+static const SDL_Color BLUE = { 0, 0, 255, SDL_ALPHA_OPAQUE };
+static const SDL_Color GREEN = { 0, 255, 0, SDL_ALPHA_OPAQUE };
+static const SDL_Color CYAN = { 0, 255, 255, SDL_ALPHA_OPAQUE };
+static const SDL_Color RED = { 255, 0, 0, SDL_ALPHA_OPAQUE };
+static const SDL_Color MAGENTA = { 255, 0, 255, SDL_ALPHA_OPAQUE };
+static const SDL_Color YELLOW = { 255, 255, 0, SDL_ALPHA_OPAQUE };
+static const SDL_Color WHITE = { 255, 255, 255, SDL_ALPHA_OPAQUE };
+
+static int render_at(SDL_Renderer * renderer, font_t * font, const char *text,
+                     int x, int y)
+{
+        SDL_Texture *texture = font_render(font, renderer, text);
+        int w, h;
+        SDL_QueryTexture(texture, NULL, NULL, &w, &h);
+        SDL_Rect dest = { x, y, w, h };
+        SDL_RenderCopy(renderer, texture, NULL, &dest);
+        SDL_RenderPresent(renderer);
+        SDL_DestroyTexture(texture);
+        return w;
+}
 
 static int font_test(SDL_Renderer * renderer, const char *font_file)
 {
@@ -25,41 +46,43 @@ static int font_test(SDL_Renderer * renderer, const char *font_file)
 
         font_print_info(font);
 
-        /* Use dest to track the "cursor", initialize to renderer output
-         * dimensions. */
-        SDL_Rect dest;
-        if (SDL_GetRendererOutputSize(renderer, &dest.w, &dest.h)) {
-                fprintf(stderr, "SDL_GetRendererOutputSize: %s",
-                        SDL_GetError());
-                return -1;
-        }
+        int lineheight = font_get_height(font) + 1;
+        int space = font_get_glyph_width(font, ' ');
+        int y = 0;
+        int x = 0;
 
         /* Show blended mode */
-        int lineheight = font_get_height(font) + 1;
         char *text = str_printf("blended %s", font_file);
-        font_render(font, renderer, &dest, text);
+        x += render_at(renderer, font, text, x, y);
+        x += space;
+        font_set_fgcolor(font, RED);
+        x += render_at(renderer, font, text, x, y);
+        x += space;
+        y += lineheight;
         mem_deref(text);
-
-        /* Advance the line */
-        dest.y += lineheight;
-        dest.h -= lineheight;
 
         /* Show solid mode */
-        text = str_printf("solid %s", font_file);
+        x = 0;
         font_set_render_method(font, FONT_SOLID);
-        font_render(font, renderer, &dest, text);
+        text = str_printf("solid %s", font_file);
+        font_set_fgcolor(font, GREEN);
+        x += render_at(renderer, font, text, x, y);
+        x += space;
+        font_set_fgcolor(font, BLUE);
+        x += render_at(renderer, font, text, x, y);
+        x += space;
+        y += lineheight;
         mem_deref(text);
 
-        /* Advance the line */
-        dest.y += lineheight;
-        dest.h -= lineheight;
-
         /* Show shaded mode */
-        text = str_printf("shaded %s", font_file);
+        x = 0;
         font_set_render_method(font, FONT_SHADED);
-        SDL_Color bg = { 200, 200, 200, SDL_ALPHA_OPAQUE };
-        font_set_bgcolor(font, &bg);
-        font_render(font, renderer, &dest, text);
+        font_set_fgcolor(font, CYAN);
+        font_set_bgcolor(font, BLACK);
+        text = str_printf("shaded %s", font_file);
+        x += render_at(renderer, font, text, x, y);
+        x += space;
+        y += lineheight;
         mem_deref(text);
 
         mem_deref(font);
@@ -124,7 +147,7 @@ int font_command_exec(int argc, char **argv)
         }
 
         /* Clear the screen */
-        SDL_SetRenderDrawColor(renderer, 128, 128, 128, SDL_ALPHA_OPAQUE);
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
         SDL_RenderClear(renderer);
 
         /* Run the font test */

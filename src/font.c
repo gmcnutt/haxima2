@@ -15,7 +15,7 @@
 struct font {
         TTF_Font *ttf;
         font_render_method_t render_method;
-        SDL_Color bg;
+        SDL_Color bg, fg;
 };
 
 int font_sys_init(void)
@@ -40,6 +40,17 @@ static void _font_fin(void *ptr)
 int font_get_height(font_t * font)
 {
         return TTF_FontHeight(font->ttf);
+}
+
+int font_get_glyph_width(font_t * font, char c)
+{
+        int width;
+        if (TTF_GlyphMetrics(font->ttf, c, NULL, NULL, NULL, NULL, &width)) {
+                fprintf(stderr, "TTF_GlyphMetrics(%c): %s\n", c,
+                        TTF_GetError());
+                return -1;
+        }
+        return width;
 }
 
 font_t *font_open(const char *font_file, int ptsize)
@@ -97,32 +108,34 @@ void font_print_info(font_t * font)
         printf("lineskip:   %d (pixels)\n", TTF_FontLineSkip(font->ttf));
 }
 
-void font_render(font_t * font, SDL_Renderer * renderer, const SDL_Rect * dest,
-                 const char *buf)
+SDL_Texture *font_render(font_t * font, SDL_Renderer * renderer,
+                         const char *buf)
 {
         /* Render the string using the font to a surface. */
-        SDL_Color fg = { 0, 0, 0, SDL_ALPHA_OPAQUE };
         SDL_Surface *surface;
 
         if (font->render_method == FONT_BLENDED) {
-                if (!(surface = TTF_RenderText_Blended(font->ttf, buf, fg))) {
+                if (!
+                    (surface =
+                     TTF_RenderText_Blended(font->ttf, buf, font->fg))) {
                         fprintf(stderr, "TTF_RenderText_Blended: %s\n",
                                 TTF_GetError());
-                        return;
+                        return NULL;
                 }
         } else if (font->render_method == FONT_SHADED) {
                 if (!
                     (surface =
-                     TTF_RenderText_Shaded(font->ttf, buf, fg, font->bg))) {
+                     TTF_RenderText_Shaded(font->ttf, buf, font->fg,
+                                           font->bg))) {
                         fprintf(stderr, "TTF_RenderText_Shaded: %s\n",
                                 TTF_GetError());
-                        return;
+                        return NULL;
                 }
         } else {
-                if (!(surface = TTF_RenderText_Solid(font->ttf, buf, fg))) {
+                if (!(surface = TTF_RenderText_Solid(font->ttf, buf, font->fg))) {
                         fprintf(stderr, "TTF_RenderText_Solid: %s\n",
                                 TTF_GetError());
-                        return;
+                        return NULL;
                 }
         }
 
@@ -131,27 +144,20 @@ void font_render(font_t * font, SDL_Renderer * renderer, const SDL_Rect * dest,
         if (!(texture = SDL_CreateTextureFromSurface(renderer, surface))) {
                 fprintf(stderr, "SDL_CreateTextureFromSurface: %s\n",
                         SDL_GetError());
-                goto freesurface;
         }
 
-        /* Render the texture. */
-        int w, h;
-        SDL_QueryTexture(texture, NULL, NULL, &w, &h);
-        SDL_Rect _dest = *dest;
-        _dest.w = min(w, _dest.w);
-        _dest.h = min(h, _dest.h);
-        SDL_RenderCopy(renderer, texture, NULL, &_dest);
-        SDL_RenderPresent(renderer);
-
-        SDL_DestroyTexture(texture);
-
-freesurface:
         SDL_FreeSurface(surface);
+        return texture;
 }
 
-void font_set_bgcolor(font_t * font, SDL_Color * color)
+void font_set_bgcolor(font_t * font, SDL_Color color)
 {
-        font->bg = *color;
+        font->bg = color;
+}
+
+void font_set_fgcolor(font_t * font, SDL_Color color)
+{
+        font->fg = color;
 }
 
 void font_set_render_method(font_t * font, font_render_method_t method)
