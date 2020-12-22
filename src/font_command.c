@@ -91,7 +91,7 @@ static int font_test(SDL_Renderer * renderer, const char *font_file)
 }
 
 
-int font_command_exec(int argc, char **argv)
+void font_command_exec(int argc, char **argv)
 {
         /* Evaluate the command-line args. */
         static const char *help =
@@ -122,7 +122,7 @@ int font_command_exec(int argc, char **argv)
         /* Init SDL */
         if (SDL_Init(SDL_INIT_VIDEO)) {
                 fprintf(stderr, "SDL_Init: %s\n", SDL_GetError());
-                return -1;
+                exit(EXIT_FAILURE);
         }
 
         /* Cleanup SDL on exit. */
@@ -136,7 +136,7 @@ int font_command_exec(int argc, char **argv)
                                         SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN)))
         {
                 fprintf(stderr, "SDL_CreateWindow: %s\n", SDL_GetError());
-                return -1;
+                exit(EXIT_FAILURE);
         }
 
         /* Create the renderer. */
@@ -175,5 +175,4 @@ destroy_renderer:
 destroy_window:
         SDL_DestroyWindow(window);
 
-        return 0;
 }

@@ -7,4 +7,4 @@
 
 #pragma once
 
-int font_command_exec(int argc, char **argv);
+void font_command_exec(int argc, char **argv);

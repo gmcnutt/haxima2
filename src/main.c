@@ -10,6 +10,9 @@
 #include <SDL2/SDL.h>
 
 #include "font_command.h"
+#include "play_command.h"
+
+typedef void (*command_t)(int, char**);
 
 static void _print_help()
 {
@@ -21,6 +24,7 @@ static void _print_help()
                , PACKAGE_NAME);
         /* *INDENT-ON* */
 }
+
 
 int main(int argc, char **argv)
 {
@@ -44,20 +48,32 @@ int main(int argc, char **argv)
                 }
         }
 
-        if (optind == argc) {
-                exit(EXIT_SUCCESS);
+        /* The default command is to play the game. */
+        const char *cmd = "play";
+        if (optind != argc) {
+                cmd = argv[optind];
         }
 
-        const char *cmd = argv[optind];
-        if (!strcmp(cmd, "font")) {
-                argc -= optind;
-                argv = &argv[optind];
-                optind = 1;
-                font_command_exec(argc, argv);
+        /* Check if the user specified a different command and verify it. */
+        command_t command = NULL;
+        if (!strcmp(cmd, "play")) {
+                command = play_command_exec;
+        } else if (!strcmp(cmd, "font")) {
+                command = font_command_exec;
         } else {
                 fprintf(stderr, "%s: invalid command -- %s\n", PACKAGE_NAME,
                         cmd);
                 exit(EXIT_FAILURE);
         }
 
+        /* Do common initialization. */
+        //platform_init();
+        //font_sys_init();
+
+        /* Run the player command. */
+        argc -= optind;
+        argv = &argv[optind];
+        optind = 1;
+        command(argc, argv);
+        
 }

@@ -10,4 +10,7 @@
 /* Create a string via printf-like syntax. Free using mem_deref(). */
 char *str_printf(const char *fmt, ...);
 
+/* Allocate a copy, free using mem_deref(). */
+char *str_copy(const char *s);
+
 #endif

@@ -2,6 +2,7 @@
 
 #include <stdarg.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "mem.h"
 #include "str.h"
@@ -34,4 +35,13 @@ char *str_printf(const char *fmt, ...)
         va_end(argp);
 
         return str;
+}
+
+
+char *str_copy(const char *s)
+{
+        size_t n = strlen(s);
+        char *c = mem_alloc(n + 1, NULL);
+        strcpy(c, s);
+        return c;
 }
