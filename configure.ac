@@ -1,4 +1,4 @@
-AC_INIT([haxima2], [0.0.1])
+AC_INIT([haxima2],[0.0.1])
 dnl AC_CONFIG_SRCDIR([src/main.c])
 AC_CONFIG_HEADERS([config.h])
 dnl AC_CANONICAL_HOST
@@ -33,6 +33,9 @@ dnl AC_DEFINE(HOME_ENV, "HOME",
 dnl            [Most likely your home directory is stored in $HOME.])
 
 dnl Finally create all the generated files
-AC_CONFIG_FILES([Makefile m4/Makefile src/Makefile])
+AC_CONFIG_FILES([Makefile \
+    m4/Makefile \
+    src/Makefile \
+    resources/Makefile])
 
 AC_OUTPUT

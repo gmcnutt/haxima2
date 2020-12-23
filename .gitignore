@@ -51,25 +51,25 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-# autoconf generated files
-Makefile
-Makefile.in
-aclocal.m4
-autom4te.cache/
-compile
-config.log
-config.status
-configure
-depcomp
-install-sh
-missing
-src/.deps/
-src/Makefile
-src/Makefile.in
-config.h
-stamp-h1
-# build generated files
-haxima2
+# # autoconf generated files
+# Makefile
+# Makefile.in
+# aclocal.m4
+# autom4te.cache/
+# compile
+# config.log
+# config.status
+# configure
+# depcomp
+# install-sh
+# missing
+# src/.deps/
+# src/Makefile
+# src/Makefile.in
+# config.h
+# stamp-h1
+# # build generated files
+# haxima2
 
-# misc
-*~
+# # Misc
+# *~
