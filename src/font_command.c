@@ -4,15 +4,9 @@
  * Copyright 2020 Gordon James McNutt
  */
 
-
+#include "haxima2.h"
 #include "font_command.h"
-
-#include <config.h>
-#include <unistd.h>
-
 #include "font.h"
-#include "mem.h"
-#include "str.h"
 
 static const SDL_Color BLACK = { 0, 0, 0, SDL_ALPHA_OPAQUE };
 static const SDL_Color BLUE = { 0, 0, 255, SDL_ALPHA_OPAQUE };
@@ -23,7 +17,7 @@ static const SDL_Color MAGENTA = { 255, 0, 255, SDL_ALPHA_OPAQUE };
 static const SDL_Color YELLOW = { 255, 255, 0, SDL_ALPHA_OPAQUE };
 static const SDL_Color WHITE = { 255, 255, 255, SDL_ALPHA_OPAQUE };
 
-static int render_at(SDL_Renderer * renderer, font_t * font, const char *text,
+static int render_at(font_t * font, const char *text,
                      int x, int y)
 {
         SDL_Texture *texture = font_render(font, renderer, text);
@@ -36,13 +30,11 @@ static int render_at(SDL_Renderer * renderer, font_t * font, const char *text,
         return w;
 }
 
-static int font_test(SDL_Renderer * renderer, const char *font_file)
+static void font_test(const char *font_file)
 {
         font_t *font;
 
-        if (!(font = font_open(font_file, 18))) {
-                return -1;
-        }
+        font = font_open(font_file, 18);
 
         font_print_info(font);
 
@@ -53,10 +45,10 @@ static int font_test(SDL_Renderer * renderer, const char *font_file)
 
         /* Show blended mode */
         char *text = str_printf("blended %s", font_file);
-        x += render_at(renderer, font, text, x, y);
+        x += render_at(font, text, x, y);
         x += space;
         font_set_fgcolor(font, RED);
-        x += render_at(renderer, font, text, x, y);
+        x += render_at(font, text, x, y);
         x += space;
         y += lineheight;
         mem_deref(text);
@@ -66,10 +58,10 @@ static int font_test(SDL_Renderer * renderer, const char *font_file)
         font_set_render_method(font, FONT_SOLID);
         text = str_printf("solid %s", font_file);
         font_set_fgcolor(font, GREEN);
-        x += render_at(renderer, font, text, x, y);
+        x += render_at(font, text, x, y);
         x += space;
         font_set_fgcolor(font, BLUE);
-        x += render_at(renderer, font, text, x, y);
+        x += render_at(font, text, x, y);
         x += space;
         y += lineheight;
         mem_deref(text);
@@ -80,14 +72,12 @@ static int font_test(SDL_Renderer * renderer, const char *font_file)
         font_set_fgcolor(font, CYAN);
         font_set_bgcolor(font, BLACK);
         text = str_printf("shaded %s", font_file);
-        x += render_at(renderer, font, text, x, y);
+        x += render_at(font, text, x, y);
         x += space;
         y += lineheight;
         mem_deref(text);
 
         mem_deref(font);
-
-        return 0;
 }
 
 
@@ -119,42 +109,15 @@ void font_command_exec(int argc, char **argv)
 
         const char *font_file = argv[optind];
 
-        /* Init SDL */
-        if (SDL_Init(SDL_INIT_VIDEO)) {
-                fprintf(stderr, "SDL_Init: %s\n", SDL_GetError());
-                exit(EXIT_FAILURE);
-        }
-
-        /* Cleanup SDL on exit. */
-        atexit(SDL_Quit);
-
-        /* Create the main window */
-        SDL_Window *window = NULL;
-        if (!(window = SDL_CreateWindow(PACKAGE_STRING, SDL_WINDOWPOS_UNDEFINED,
-                                        SDL_WINDOWPOS_UNDEFINED, 640 * 2,
-                                        480 * 2,
-                                        SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN)))
-        {
-                fprintf(stderr, "SDL_CreateWindow: %s\n", SDL_GetError());
-                exit(EXIT_FAILURE);
-        }
-
-        /* Create the renderer. */
-        SDL_Renderer *renderer = NULL;
-        if (!(renderer = SDL_CreateRenderer(window, -1, 0))) {
-                fprintf(stderr, "SDL_CreateRenderer: %s\n", SDL_GetError());
-                goto destroy_window;
-        }
 
         /* Clear the screen */
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255,
+                               SDL_ALPHA_OPAQUE);
         SDL_RenderClear(renderer);
 
         /* Run the font test */
         font_sys_init();
-        if (font_test(renderer, font_file)) {
-                goto destroy_renderer;
-        }
+        font_test(font_file);
 
         /* Loop until user exits */
         SDL_Event event;
@@ -168,11 +131,4 @@ void font_command_exec(int argc, char **argv)
                         }
                 }
         }
-
-destroy_renderer:
-        SDL_DestroyRenderer(renderer);
-
-destroy_window:
-        SDL_DestroyWindow(window);
-
 }

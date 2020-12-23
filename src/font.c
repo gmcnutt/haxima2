@@ -11,6 +11,7 @@
 
 #include "common.h"
 #include "mem.h"
+#include "panic.h"
 
 struct font {
         TTF_Font *ttf;
@@ -58,14 +59,9 @@ font_t *font_open(const char *font_file, int ptsize)
         font_t *font = mem_alloc(sizeof (font_t), _font_fin);
 
         if (!(font->ttf = TTF_OpenFont(font_file, ptsize))) {
-                fprintf(stderr, "TTF_OpenFont(%s): %s\n", font_file,
-                        TTF_GetError());
-                goto deref;
+                panic("TTF_OpenFont(%s): %s\n", font_file);
         }
         return font;
-deref:
-        mem_deref(font);
-        return NULL;
 }
 
 void font_print_info(font_t * font)

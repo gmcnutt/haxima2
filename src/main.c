@@ -3,24 +3,26 @@
  *
  * Copyright 2020 Gordon McNutt
  */
-#include <config.h>
-#include <stdio.h>
-#include <unistd.h>
 
-#include <SDL2/SDL.h>
+#include "haxima2.h"
 
 #include "font_command.h"
 #include "play_command.h"
 
+
+SDL_Window *window = NULL;
+SDL_Renderer *renderer = NULL;
+
+
 typedef void (*command_t)(int, char**);
+
 
 static void _print_help()
 {
         /* *INDENT-OFF* */
         printf("Usage: %s [options] [command]\n"
                "Options: \n" "  -h: help\n" "  -v: version\n"
-               "Commands:\n"
-               "  font\n"
+               "Commands: font play[default]\n"
                , PACKAGE_NAME);
         /* *INDENT-ON* */
 }
@@ -67,13 +69,35 @@ int main(int argc, char **argv)
         }
 
         /* Do common initialization. */
-        //platform_init();
-        //font_sys_init();
+     
+        /* Init SDL */
+        if (SDL_Init(SDL_INIT_VIDEO)) {
+                panic("SDL_Init: %s\n", SDL_GetError());
+        }
+
+        /* Cleanup SDL on exit. */
+        atexit(SDL_Quit);
+
+        /* Create the main window */
+        if (!(window = SDL_CreateWindow(
+                      PACKAGE_STRING,
+                      SDL_WINDOWPOS_UNDEFINED,
+                      SDL_WINDOWPOS_UNDEFINED,
+                      640 * 2,
+                      480 * 2,
+                      SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN)))
+        {
+                panic("SDL_CreateWindow: %s\n", SDL_GetError());
+        }
+
+        /* Create the renderer. */
+        if (!(renderer = SDL_CreateRenderer(window, -1, 0))) {
+                panic("SDL_CreateRenderer: %s\n", SDL_GetError());
+        }
 
         /* Run the player command. */
         argc -= optind;
         argv = &argv[optind];
         optind = 1;
-        command(argc, argv);
-        
+        command(argc, argv);        
 }
