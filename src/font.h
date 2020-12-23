@@ -15,10 +15,6 @@ typedef struct font font_t;
 /* Initialze the font system. */
 int font_sys_init(void);
 
-/* Get a well-known font. This is a permanent object so no need to release
- * it. It's an error if this font does not exist. */
-font_t *font_get(const char *key);
-
 /* Max height in pixels of rendered text. */
 int font_get_height(font_t * font);
 
@@ -32,8 +28,7 @@ font_t *font_open(const char *font_file, int ptsize);
 void font_print_info(font_t * font);
 
 /* Render text to a texture. */
-SDL_Texture *font_render(font_t * font, SDL_Renderer * renderer,
-                         const char *text);
+SDL_Texture *font_render(font_t * font, const char *text);
 
 /* Set the background color for shaded rendering; foreground color for any
  * rendering. */

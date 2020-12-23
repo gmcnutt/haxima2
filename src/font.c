@@ -5,13 +5,11 @@
  */
 
 #include "font.h"
+#include "haxima2.h"
 
-#include <stdio.h>
+/* So far SDL_ttf is completely encapsulated here. */
 #include <SDL2/SDL_ttf.h>
 
-#include "common.h"
-#include "mem.h"
-#include "panic.h"
 
 struct font {
         TTF_Font *ttf;
@@ -104,8 +102,7 @@ void font_print_info(font_t * font)
         printf("lineskip:   %d (pixels)\n", TTF_FontLineSkip(font->ttf));
 }
 
-SDL_Texture *font_render(font_t * font, SDL_Renderer * renderer,
-                         const char *buf)
+SDL_Texture *font_render(font_t * font, const char *buf)
 {
         /* Render the string using the font to a surface. */
         SDL_Surface *surface;

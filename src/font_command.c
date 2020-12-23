@@ -20,7 +20,7 @@ static const SDL_Color WHITE = { 255, 255, 255, SDL_ALPHA_OPAQUE };
 static int render_at(font_t * font, const char *text,
                      int x, int y)
 {
-        SDL_Texture *texture = font_render(font, renderer, text);
+        SDL_Texture *texture = font_render(font, text);
         int w, h;
         SDL_QueryTexture(texture, NULL, NULL, &w, &h);
         SDL_Rect dest = { x, y, w, h };

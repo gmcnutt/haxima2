@@ -16,11 +16,21 @@
 #include <unistd.h>
 
 /* Common application includes */
+#include "font.h"
 #include "mem.h"
 #include "panic.h"
 #include "str.h"
 
 /* Common macros */
+#define max(a,b)               \
+  ({ __typeof__ (a) _a = (a);  \
+      __typeof__ (b) _b = (b); \
+    _a > _b ? _a : _b; })
+
+#define min(a,b)               \
+  ({ __typeof__ (a) _a = (a);  \
+      __typeof__ (b) _b = (b); \
+    _a < _b ? _a : _b; })
 
 
 /* Globals */

@@ -13,7 +13,7 @@
 SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
 
-
+/* Typedef function pointer for subcommands. */
 typedef void (*command_t)(int, char**);
 
 
@@ -30,9 +30,6 @@ static void _print_help()
 
 int main(int argc, char **argv)
 {
-        printf("%s %s\n", PACKAGE_NAME, PACKAGE_VERSION);
-        printf("DATADIR='%s'\n", DATADIR);
-        printf("PREFIX='%s'\n", PREFIX);
 
         /* Evaluate the command-line args. */
         int c;
@@ -78,9 +75,6 @@ int main(int argc, char **argv)
         /* Cleanup SDL on exit. */
         atexit(SDL_Quit);
 
-        printf("base_path=%s\n", SDL_GetBasePath());
-        printf("pref_path=%s\n", SDL_GetPrefPath("gjm", "haxima2"));
-        return 0;
         
         /* Create the main window */
         if (!(window = SDL_CreateWindow(
@@ -99,6 +93,9 @@ int main(int argc, char **argv)
                 panic("SDL_CreateRenderer: %s\n", SDL_GetError());
         }
 
+        font_sys_init();
+        
+        
         /* Clear the screen */
         SDL_SetRenderDrawColor(renderer, 255, 255, 255,
                                SDL_ALPHA_OPAQUE);
