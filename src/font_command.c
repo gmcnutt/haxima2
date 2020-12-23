@@ -30,11 +30,11 @@ static int render_at(font_t * font, const char *text,
         return w;
 }
 
-static void font_test(const char *font_file)
+static void font_test(const char *font_file, int ptsize)
 {
         font_t *font;
 
-        font = font_open(font_file, 18);
+        font = font_open(font_file, ptsize);
 
         font_print_info(font);
 
@@ -86,13 +86,17 @@ void font_command_exec(int argc, char **argv)
         /* Evaluate the command-line args. */
         static const char *help =
             "Usage: haxima2 font [options] <font-file>\n" "Options:\n"
+            " -s: point size\n"
             " -h: help\n";
-        int c;
-        while ((c = getopt(argc, argv, "h")) != -1) {
+        int c, ptsize = 18;
+        while ((c = getopt(argc, argv, "hs:")) != -1) {
                 switch (c) {
                 case '?':
                         printf("%s", help);
                         exit(EXIT_FAILURE);
+                case 's':
+                        ptsize = atoi(optarg);
+                        break;
                 case 'h':
                 default:
                         printf("%s", help);
@@ -110,14 +114,9 @@ void font_command_exec(int argc, char **argv)
         const char *font_file = argv[optind];
 
 
-        /* Clear the screen */
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255,
-                               SDL_ALPHA_OPAQUE);
-        SDL_RenderClear(renderer);
-
         /* Run the font test */
         font_sys_init();
-        font_test(font_file);
+        font_test(font_file, ptsize);
 
         /* Loop until user exits */
         SDL_Event event;

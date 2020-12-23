@@ -1,3 +1,4 @@
+AM_CFLAGS = -DDATADIR=\"@datadir@\" -DPREFIX=\"@prefix@\"
 bin_PROGRAMS = haxima2
 haxima2_SOURCES = \
 	font.c \
@@ -8,3 +9,5 @@ haxima2_SOURCES = \
 	panic.c \
 	play_command.c \
 	str.c
+
+MAINTAINERCLEANFILES = Makefile.in

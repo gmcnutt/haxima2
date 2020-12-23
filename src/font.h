@@ -15,6 +15,10 @@ typedef struct font font_t;
 /* Initialze the font system. */
 int font_sys_init(void);
 
+/* Get a well-known font. This is a permanent object so no need to release
+ * it. It's an error if this font does not exist. */
+font_t *font_get(const char *key);
+
 /* Max height in pixels of rendered text. */
 int font_get_height(font_t * font);
 

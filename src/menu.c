@@ -5,6 +5,7 @@
  *
  */
 
+#if 0
 
 #include "menu.h"
 
@@ -70,3 +71,5 @@ void menu_on_mouse_move(menu_t *menu, int x, int y)
 {
         /* TODO */
 }
+
+#endif

@@ -5,6 +5,7 @@
  *
  */
 
+#if 0
 
 #pragma once
 
@@ -26,3 +27,5 @@ void menu_show(menu_t *menu);
 /* Pass a click event to the menu. (x, y) are relative to the menu origin. */
 void menu_on_mouse_click(menu_t *menu, int x, int y);
 void menu_on_mouse_move(menu_t *menu, int x, int y);
+
+#endif
