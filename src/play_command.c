@@ -7,6 +7,7 @@
 
 #include "haxima2.h"
 #include "play_command.h"
+
 #include "font.h"
 
 const char *MAIN_MENU_FONT_PATH = DATADIR "/" PACKAGE "/avatar.ttf";
@@ -17,11 +18,14 @@ void play_command_exec(int argc, char **argv)
         /* Open the font we want */
         font_t *font = font_open(MAIN_MENU_FONT_PATH, MAIN_MENU_FONT_PTSIZE);
 
+        /* Render the title centered. */
         const char *text = "Haxima2";
         SDL_Texture *texture = font_render(font, text);
-        int w, h;
-        SDL_QueryTexture(texture, NULL, NULL, &w, &h);
-        SDL_Rect dest = { 0, 0, w, h };
+        int rw, rh;
+        SDL_GetRendererOutputSize(renderer, &rw, &rh);
+        int tw, th;
+        SDL_QueryTexture(texture, NULL, NULL, &tw, &th);
+        SDL_Rect dest = { (rw - tw) / 2, 0, tw, th };
         SDL_RenderCopy(renderer, texture, NULL, &dest);
         SDL_RenderPresent(renderer);
         SDL_DestroyTexture(texture);
