@@ -16,4 +16,3 @@ const SDL_Color RED = { 255, 0, 0, SDL_ALPHA_OPAQUE };
 const SDL_Color MAGENTA = { 255, 0, 255, SDL_ALPHA_OPAQUE };
 const SDL_Color YELLOW = { 255, 255, 0, SDL_ALPHA_OPAQUE };
 const SDL_Color WHITE = { 255, 255, 255, SDL_ALPHA_OPAQUE };
-

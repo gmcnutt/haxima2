@@ -11,6 +11,7 @@
 /* Common system includes */
 #include <SDL2/SDL.h>
 #include <config.h>
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <unistd.h>

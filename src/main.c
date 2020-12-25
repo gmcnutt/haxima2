@@ -14,7 +14,7 @@ SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
 
 /* Typedef function pointer for subcommands. */
-typedef void (*command_t)(int, char**);
+typedef void (*command_t) (int, char **);
 
 
 static void _print_help()
@@ -75,15 +75,14 @@ int main(int argc, char **argv)
         /* Cleanup SDL on exit. */
         atexit(SDL_Quit);
 
-        
+
         /* Create the main window */
-        if (!(window = SDL_CreateWindow(
-                      PACKAGE_STRING,
-                      SDL_WINDOWPOS_UNDEFINED,
-                      SDL_WINDOWPOS_UNDEFINED,
-                      640 * 2,
-                      480 * 2,
-                      SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN)))
+        if (!(window = SDL_CreateWindow(PACKAGE_STRING,
+                                        SDL_WINDOWPOS_UNDEFINED,
+                                        SDL_WINDOWPOS_UNDEFINED,
+                                        640 * 2,
+                                        480 * 2,
+                                        SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN)))
         {
                 panic("SDL_CreateWindow: %s\n", SDL_GetError());
         }
@@ -94,17 +93,16 @@ int main(int argc, char **argv)
         }
 
         font_sys_init();
-        
-        
+
+
         /* Clear the screen */
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255,
-                               SDL_ALPHA_OPAQUE);
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
         SDL_RenderClear(renderer);
         SDL_RenderPresent(renderer);
-        
+
         /* Run the player command. */
         argc -= optind;
         argv = &argv[optind];
         optind = 1;
-        command(argc, argv);        
+        command(argc, argv);
 }

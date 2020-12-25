@@ -9,8 +9,7 @@
 #include "font.h"
 
 
-static int render_at(font_t * font, const char *text,
-                     int x, int y)
+static int render_at(font_t * font, const char *text, int x, int y)
 {
         SDL_Texture *texture = font_render(font, text);
         int w, h;
@@ -78,8 +77,7 @@ void font_command_exec(int argc, char **argv)
         /* Evaluate the command-line args. */
         static const char *help =
             "Usage: haxima2 font [options] <font-file>\n" "Options:\n"
-            " -s: point size\n"
-            " -h: help\n";
+            " -s: point size\n" " -h: help\n";
         int c, ptsize = 18;
         while ((c = getopt(argc, argv, "hs:")) != -1) {
                 switch (c) {

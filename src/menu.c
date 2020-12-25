@@ -31,7 +31,7 @@ struct menu_option {
 
 static void _menu_fin(void *ptr)
 {
-        menu_t *menu = (menu_t*)ptr;
+        menu_t *menu = (menu_t *) ptr;
         if (menu->title) {
                 mem_deref(menu->title);
         }
@@ -41,33 +41,33 @@ static void _menu_fin(void *ptr)
 
 menu_t *menu_alloc(const char *title)
 {
-        menu_t *menu = mem_alloc(sizeof(menu_t), _menu_fin);
+        menu_t *menu = mem_alloc(sizeof (menu_t), _menu_fin);
         list_init(&menu->options);
         menu->title = str_copy(title);
         return menu;
 }
 
-void menu_add_option(menu_t *menu, const char *title, menu_cb_t cb, void *data)
+void menu_add_option(menu_t * menu, const char *title, menu_cb_t cb, void *data)
 {
         /* TODO */
 }
 
-void menu_hide(menu_t *menu)
+void menu_hide(menu_t * menu)
 {
         /* TODO */
 }
 
-void menu_show(menu_t *menu)
+void menu_show(menu_t * menu)
 {
         /* TODO */
 }
 
-void menu_on_mouse_click(menu_t *menu, int x, int y)
+void menu_on_mouse_click(menu_t * menu, int x, int y)
 {
         /* TODO */
 }
 
-void menu_on_mouse_move(menu_t *menu, int x, int y)
+void menu_on_mouse_move(menu_t * menu, int x, int y)
 {
         /* TODO */
 }
