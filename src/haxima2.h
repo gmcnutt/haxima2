@@ -33,6 +33,17 @@
     _a < _b ? _a : _b; })
 
 
+/* Constants */
+const SDL_Color BLACK;
+const SDL_Color BLUE;
+const SDL_Color GREEN;
+const SDL_Color CYAN;
+const SDL_Color RED;
+const SDL_Color MAGENTA;
+const SDL_Color YELLOW;
+const SDL_Color WHITE;
+
+
 /* Globals */
 extern SDL_Window *window;
 extern SDL_Renderer *renderer;

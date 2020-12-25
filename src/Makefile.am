@@ -1,6 +1,7 @@
 AM_CFLAGS = -DDATADIR=\"@datadir@\" -DPREFIX=\"@prefix@\"
 bin_PROGRAMS = haxima2
 haxima2_SOURCES = \
+	constants.c \
 	font.c \
 	font_command.c \
 	main.c \

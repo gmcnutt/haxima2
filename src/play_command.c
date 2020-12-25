@@ -14,18 +14,19 @@ const char *MAIN_MENU_FONT_PATH = DATADIR "/" PACKAGE "/avatar.ttf";
 const int SPLASH_FONT_PTSIZE = 128;
 const int MAIN_MENU_FONT_PTSIZE = 64;
 
-void clear_screen()
+void clear_screen(SDL_Color color)
 {
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255,
-                               SDL_ALPHA_OPAQUE);
+        SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b,
+                               color.a);
         SDL_RenderClear(renderer);
         SDL_RenderPresent(renderer);
 }
 
 void splash()
 {
-        clear_screen();
+        clear_screen(BLACK);
         font_t *font = font_open(MAIN_MENU_FONT_PATH, SPLASH_FONT_PTSIZE);
+        font_set_fgcolor(font, CYAN);
         const char *text = "Haxima2";
         SDL_Texture *texture = font_render(font, text);
         int rw, rh;
@@ -54,10 +55,11 @@ void splash()
 
 void main_menu()
 {
-        clear_screen();
+        clear_screen(BLACK);
         
         /* Render the first option centered below. */
         font_t *font = font_open(MAIN_MENU_FONT_PATH, MAIN_MENU_FONT_PTSIZE);
+        font_set_fgcolor(font, YELLOW);
         const char *text = "New Game";
         SDL_Texture *texture = font_render(font, text);
         int rw, rh;
@@ -67,10 +69,8 @@ void main_menu()
         SDL_Rect dest = { (rw - tw) / 2, 0, tw, th };
         SDL_RenderCopy(renderer, texture, NULL, &dest);
         SDL_DestroyTexture(texture);
-        mem_deref(font);
 
         /* Render the quit option centered below. */
-        font = font_open(MAIN_MENU_FONT_PATH, MAIN_MENU_FONT_PTSIZE);
         text = "Quit";
         texture = font_render(font, text);
         dest.y += th;
