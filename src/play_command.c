@@ -29,7 +29,7 @@ bool main_menu_event_cb(SDL_Event * event)
         return false;
 }
 
-void run_event_loop(bool(*cb) (SDL_Event * event))
+void run_event_loop(bool (*cb)(SDL_Event * event))
 {
         /* Loop until user exits */
         SDL_Event event;

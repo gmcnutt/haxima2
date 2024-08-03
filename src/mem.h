@@ -18,7 +18,7 @@
  * If 'fin' is not NULL it will be called on the final mem_deref. The returned
  * chunk will have a refcount of 1.
  */
-void *mem_alloc(size_t size, void (*fin) (void *));
+void *mem_alloc(size_t size, void (*fin)(void *));
 
 /**
  * Increment the refcount on a chunk.
@@ -40,7 +40,7 @@ size_t mem_get_refs(void *ptr);
 /**
  * Set a function to call when an error occurs.
  */
-void mem_set_err_handler(void (*handler) (size_t size));
+void mem_set_err_handler(void (*handler)(size_t size));
 
 /**
  * Return a string describing the last error.

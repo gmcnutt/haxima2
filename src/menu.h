@@ -11,7 +11,7 @@
 
 typedef struct menu menu_t;
 
-typedef int (*menu_cb_t) (menu_t * menu, void *data);
+typedef int (*menu_cb_t)(menu_t * menu, void *data);
 
 /* Create a menu, free using mem_deref(). */
 menu_t *menu_alloc(const char *title);

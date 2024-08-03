@@ -14,7 +14,7 @@ SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
 
 /* Typedef function pointer for subcommands. */
-typedef void (*command_t) (int, char **);
+typedef void (*command_t)(int, char **);
 
 
 static void _print_help()
