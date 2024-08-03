@@ -8,6 +8,11 @@ Work-in-progress CRPG.
 * freetype2 [https://www.freetype.org/download.html]
 * SDL_ttf 2.0 [https://www.libsdl.org/projects/SDL_ttf/]
 
+To install requirements on Ubuntu:
+
+    sudo apt install libsdl2-dev libsdl2-2.0-0 -y;
+    sudo apt install libfreetype6-dev libsdl2-ttf-dev libsdl2-ttf-2.0-0 -y;
+
 
 # Build
 

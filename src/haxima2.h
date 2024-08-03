@@ -35,14 +35,14 @@
 
 
 /* Constants */
-const SDL_Color BLACK;
-const SDL_Color BLUE;
-const SDL_Color GREEN;
-const SDL_Color CYAN;
-const SDL_Color RED;
-const SDL_Color MAGENTA;
-const SDL_Color YELLOW;
-const SDL_Color WHITE;
+extern const SDL_Color BLACK;
+extern const SDL_Color BLUE;
+extern const SDL_Color GREEN;
+extern const SDL_Color CYAN;
+extern const SDL_Color RED;
+extern const SDL_Color MAGENTA;
+extern const SDL_Color YELLOW;
+extern const SDL_Color WHITE;
 
 
 /* Globals */
